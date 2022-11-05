@@ -24,10 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class ActivityController {
@@ -306,8 +303,10 @@ public class ActivityController {
      * 导入市场活动列表
      * @return
      */
-    @RequestMapping("workbench/activity/insertActivityByList.do")
-    public Object insertActivityByList(MultipartFile activityFile){
+    @RequestMapping("/workbench/activity/insertActivityByList.do")
+    public Object insertActivityByList(String userName , MultipartFile activityFile , HttpSession session){
+
+        ReturnObject returnObject = new ReturnObject();
         try {
             //这个是获取文件名称的
             String originalFile = activityFile.getOriginalFilename();
@@ -325,6 +324,11 @@ public class ActivityController {
             HSSFRow row = null;
             HSSFCell cell = null;
             Activity activity = null;
+            User user = (User) session.getAttribute(Contants.SESSION_USER);
+
+            //创建一个市场活动数组
+            List<Activity> activityList = new ArrayList<>();
+
             for (int i =1 ; i <= sheet.getLastRowNum() ; i++){//getLastRowNum是最后一行下表
 
                 //获取第一行数据
@@ -332,6 +336,10 @@ public class ActivityController {
 
                 //每遍历出来一行就要封装一个实体类对象
                 activity = new Activity();
+                activity.setId(UUIDUtils.getUUID());
+                activity.setOwner(user.getId());
+                activity.setCreateBy(session.getId());
+                activity.setCreateTime(DateUtils.formateDateTime(new Date()));
 
                 //获取好一行之后就要获取列，列中好好多数据就要循环
                 for (int j = 0 ;j< row.getLastCellNum();j++){//getLastCellNum是最后一列下表+1
@@ -339,14 +347,33 @@ public class ActivityController {
                     cell = row.getCell(j);
                     //获取列中的数据
                     String cellValue = HSSFUtils.getCellValueForStr(cell);
-
+                    //获取好了之后就将数据封装到activity对象中
+                    if(j ==0){
+                        activity.setName(cellValue);
+                    }else if (j == 1){
+                        activity.setStartDate(cellValue);
+                    }else if (j == 2){
+                        activity.setEndDate(cellValue);
+                    }else if (j == 3){
+                        activity.setCost(cellValue);
+                    }else if (j == 4){
+                        activity.setDescription(cellValue);
+                    }
                 }
+                //到这里就说明这一行的数据封装好了到对象中了，接下来就要将封装好的对象放到数组中去
+                activityList.add(activity);
             }
+            //到这里就说明封装好数组了，可以调用service方法
+            int count = activityService.insertActivityByList(activityList);
 
-
+            //在这里不需要判断，有try catch
+            returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+            returnObject.setRetData(count);
         } catch (Exception e) {
             e.printStackTrace();
+            returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("系统忙，请稍后重试！");
         }
-        return "";
+        return returnObject;
     }
 }
