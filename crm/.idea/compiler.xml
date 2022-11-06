@@ -6,11 +6,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="crm-mybatis-generator" />
         <module name="crm" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="crm" target="1.8" />
+      <module name="crm-mybatis-generator" target="1.5" />
+      <module name="untitled" target="8" />
+      <module name="untitled1" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>

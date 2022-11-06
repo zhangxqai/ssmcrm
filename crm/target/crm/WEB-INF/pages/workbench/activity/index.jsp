@@ -344,6 +344,53 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 			//这里直接发送同步请求
 			window.location.href ="workbench/activity/selectAllActivityDow.do";
 		})
+
+		//为导入按钮绑定单击事件
+		$("#importActivityBtn").click(function (){
+			//第一步收集数据
+			var activityFileName = $("#activityFile").val();
+			//截取后面三位字符，判断是不是xls文件
+			var suffix = activityFileName.substr(activityFileName.indexOf(".")+1).toLocaleLowerCase();
+			if (suffix != "xls"){
+				alert("只支持xls文件");
+				return;
+			}
+			//通过dow对象获取文件
+			var activityFile = $("#activityFile")[0].files;
+			//获取号文件之后就要对文件的大小进行判断
+			if (activityFile.size > 5*1024*1024){
+				alert("文件大小不能超过5MB！")
+				return;
+			}
+
+			//FormData是ajax提供的接口,可以模拟键值对向后台提交参数;
+			//FormData最大的优势是不但能提交文本数据，还能提交二进制数据
+			var formData = new FormData();
+			formData.append("activityFile",activityFile);
+			formData.append("userName","张三");
+
+			//发送ajax请求
+			$.ajax({
+				url:'workbench/activity/insertActivityByList.do',
+				data:formData,
+				processData:false,//设置ajax向后台提交参数之前，是否把参数统- 转换成字符串: true--是, false--不是，默认是true
+				contentType:false,//设置ajax向后台提交参数之前，是否把所有的参数统一"按urlencoded编码: true--是，false--不是，默认是true
+				type:'post',
+				dataType:'json',
+				success:function (data){
+					if (data.code == "1"){
+						//成功之后提示消息，导入多少条
+						alert("成功导入"+data.reData+"条数据");
+						//关闭模态窗口
+						$("#importActivityModal").modal("hide");
+						//刷新列表
+						selectActivityAll(1,$("#demo_pag1").bs_pagination('getOption','rowsPerPage'));
+					}else {
+						alert(data.message);
+					}
+				}
+			})
+		})
 		
 	});
 
@@ -384,7 +431,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				$.each(data.activityList,function (index,obj){
 					html += "<tr class=\"active\">";
 					html += "<td><input type=\"checkbox\" value='"+obj.id+"' /></td>";
-					html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">"+obj.name+"</a></td>";
+					html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/activity/selectActivityRemarkById.do?id="+obj.id+"'\">"+obj.name+"</a></td>";
 					html += "<td>"+obj.owner+"</td>";
 					html += "<td>"+obj.startDate+"</td>";
 					html += "<td>"+obj.endDate+"</td>";
@@ -680,14 +727,14 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 					<tbody id="tBody">
 						<%--<tr class="active">
 							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">发传单</a></td>
+							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">发传单</a></td>
                             <td>zhangsan</td>
 							<td>2020-10-10</td>
 							<td>2020-10-20</td>
 						</tr>
                         <tr class="active">
                             <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">发传单</a></td>
+                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">发传单</a></td>
                             <td>zhangsan</td>
                             <td>2020-10-10</td>
                             <td>2020-10-20</td>

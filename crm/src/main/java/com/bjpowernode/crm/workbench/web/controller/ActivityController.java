@@ -8,6 +8,8 @@ import com.bjpowernode.crm.commons.utils.UUIDUtils;
 import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.settings.service.UserService;
 import com.bjpowernode.crm.workbench.domain.Activity;
+import com.bjpowernode.crm.workbench.domain.ActivityRemark;
+import com.bjpowernode.crm.workbench.service.ActivityRemarkService;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -34,6 +36,9 @@ public class ActivityController {
 
     @Autowired
     private ActivityService activityService;
+
+    @Autowired
+    private ActivityRemarkService activityRemarkService;
 
     @RequestMapping("/workbench/activity/index.do")
     public String index(HttpServletRequest request){
@@ -310,12 +315,13 @@ public class ActivityController {
         try {
             //这个是获取文件名称的
             String originalFile = activityFile.getOriginalFilename();
-            //把exel文件写道磁盘中
+            /*//把exel文件写道磁盘中
             File file = new File("F:\\crm_ssm\\serverDir",originalFile);
 
             //解析exel文件，获取文件中的数据，并封装为activityList
             InputStream is = new FileInputStream("F:\\crm_ssm\\serverDir"+originalFile);
-
+*/
+            InputStream is = activityFile.getInputStream();
             //这里就要创建exel文件
             HSSFWorkbook wb = new HSSFWorkbook(is);
             //创建完之后，就要获取文件中数据,获取页数，0就是第一页
@@ -375,5 +381,20 @@ public class ActivityController {
             returnObject.setMessage("系统忙，请稍后重试！");
         }
         return returnObject;
+    }
+
+    @RequestMapping("/workbench/activity/selectActivityRemarkById.do")
+    public Object selectActivityRemarkById(String id, HttpServletRequest request){
+        //调用service方法查询，这个id的市场活动
+        Activity activity = activityService.selectActivityById(id);
+        //调用service方法查询，这个市场活动中的所有市场备注
+        List<ActivityRemark> activityRemarkList = activityRemarkService.selectActivityRemarkById(id);
+
+        //查询好了之后就要将这些数据封装在request中跳转页面
+        request.setAttribute("activity",activity);
+        request.setAttribute("activityRemarkList",activityRemarkList);
+
+        //跳转页面
+        return "workbench/activity/detail";
     }
 }
