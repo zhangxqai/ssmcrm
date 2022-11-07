@@ -11,4 +11,11 @@ public interface ActivityRemarkService {
      * @return
      */
     List<ActivityRemark> selectActivityRemarkById(String id);
+
+    /**
+     * 添加市场活动备注
+     * @param activityRemark
+     * @return
+     */
+    int insertRemark(ActivityRemark activityRemark);
 }

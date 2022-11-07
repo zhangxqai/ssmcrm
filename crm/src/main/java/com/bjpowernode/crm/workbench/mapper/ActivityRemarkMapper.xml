@@ -166,12 +166,20 @@
     where id = #{id,jdbcType=CHAR}
   </update>
 
-  <!--from 字母没有打全，left join没有打全-->
+  <!--查询所有市场活动备注
+  from 字母没有打全，left join没有打全-->
   <select id="selectActivityRemarkById" parameterType="string" resultMap="BaseResultMap">
     select ar.id,ar.note_content,ar.create_time,u1.name as create_by,ar.edit_time,ar.edit_flag,u2.name as edit_by
     from tbl_activity_remark ar
     join tbl_user u1 on u1.id = ar.create_by
     left join tbl_user u2 on u2.id = ar.edit_by
     where ar.activity_id = #{id}
+    order by ar.create_time asc
   </select>
+
+  <!--添加市场活动备注-->
+  <insert id="insertRemark" parameterType="com.bjpowernode.crm.workbench.domain.ActivityRemark">
+    insert into tbl_activity_remark (id,note_content,create_time,create_by,edit_flag,activity_id)
+        values (#{id},#{noteContent},#{createTime},#{createBy},#{editFlag},#{activityId})
+  </insert>
 </mapper>

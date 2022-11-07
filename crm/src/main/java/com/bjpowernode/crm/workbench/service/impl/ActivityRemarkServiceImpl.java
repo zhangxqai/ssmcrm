@@ -8,16 +8,31 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service("activityRemarkService")
 public class ActivityRemarkServiceImpl implements ActivityRemarkService {
 
     @Autowired
     private ActivityRemarkMapper activityRemarkMapper;
 
+    /**
+     * 根据市场活动的id查询有关这条市场活动的备注全部备注消息
+     * @param id
+     * @return
+     */
     @Override
     public List<ActivityRemark> selectActivityRemarkById(String id) {
         //调用mapper层
         List<ActivityRemark> activityRemarkList = activityRemarkMapper.selectActivityRemarkById(id);
         return activityRemarkList;
+    }
+
+    /**
+     * 添加市场活动备注
+     * @param activityRemark
+     * @return
+     */
+    @Override
+    public int insertRemark(ActivityRemark activityRemark) {
+        return activityRemarkMapper.insertRemark(activityRemark);
     }
 }

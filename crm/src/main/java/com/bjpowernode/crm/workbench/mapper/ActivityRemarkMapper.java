@@ -53,5 +53,17 @@ public interface ActivityRemarkMapper {
      */
     int updateByPrimaryKey(ActivityRemark record);
 
+    /**
+     * 根据市场活动的id查询有关这条市场活动的备注全部备注消息
+     * @param id
+     * @return
+     */
     List<ActivityRemark> selectActivityRemarkById(String id);
+
+    /**
+     * 添加市场活动的备注
+     * @param activityRemark
+     * @return
+     */
+    int insertRemark(ActivityRemark activityRemark);
 }

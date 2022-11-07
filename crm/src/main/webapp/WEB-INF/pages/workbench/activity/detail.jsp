@@ -36,23 +36,100 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 			cancelAndSaveBtnDefault = true;
 		});
 		
-		$(".remarkDiv").mouseover(function(){
+		/*$(".remarkDiv").mouseover(function(){
 			$(this).children("div").children("div").show();
-		});
-		
-		$(".remarkDiv").mouseout(function(){
+		});*/
+
+		//想要动态的获取全部元素,第一步先找到这些元素的父标签,第二步是on，里面还有三个需要填数值，
+		//第一个是想要发生什么事件，第二个是那些元素的标签，第三个就是函数
+		//给全部备注动态绑定鼠标悬停事件
+		$("#remarkDivList").on("mouseover",".remarkDiv",function (){
+			$(this).children("div").children("div").show();
+		})
+
+		/*$(".remarkDiv").mouseout(function(){
 			$(this).children("div").children("div").hide();
-		});
-		
-		$(".myHref").mouseover(function(){
+		});*/
+		//为全部备注动态绑定鼠标消失事件
+		$("#remarkDivList").on("mouseout",".remarkDiv",function (){
+			$(this).children("div").children("div").hide();
+		})
+
+		/*$(".myHref").mouseover(function(){
 			$(this).children("span").css("color","red");
-		});
-		
+		});*/
+		//为备注修改图标绑定显示事件
+		$("#remarkDivList").on("mouseover",".myHref",function (){
+			$(this).children("span").css("color","red");
+		})
+		/*
 		$(".myHref").mouseout(function(){
 			$(this).children("span").css("color","#E6E6E6");
-		});
+		});*/
+		//为备注删除图标绑定鼠标消失事件
+		$("#remarkDivList").on("mouseout",".myHref",function (){
+			$(this).children("span").css("color","#E6E6E6");
+		})
+
+		//为保存按钮绑定事件
+		$("#insertActivityRemarkBtn").click(function (){
+
+			//收集参数
+			var noteContent = $.trim($("#remark").val());
+			var activityId = '${activity.id}';
+			//表单验证
+			//备注内容不能为空
+			if (noteContent == ""){
+				alert("备注内容不能为空");
+				return;
+			}
+			//这里就能直接发请求
+			$.ajax({
+				url:'workbench/activity/insertRemark.do',
+				data:{
+					noteContent:noteContent,
+					activityId:activityId
+				},
+				type:'post',
+				dataType:'json',
+				success:function (data){
+					//判断有没有修改成功
+					if (data.code == "1"){
+
+						//清楚内容
+						$("#remark").val("")
+						//成功，更新备注列表,动态拼接
+						var html = "";
+
+						html +="<div class=\"remarkDiv\" style=\"height: 60px;\">"
+						html +="<img title=\"${sessionScope.sessionUser.name}\" src=\"image/user-thumbnail.png\" style=\"width: 30px; height:30px;\">"
+						html +="<div style=\"position: relative; top: -40px; left: 40px;\" >"
+						html +="<h5>"+data.retData.noteContent+"</h5>"
+						html +="<font color=\"gray\">市场活动</font> <font color=\"gray\">-</font> <b>${activity.name}</b> <small style=\"color: gray;\">"+data.retData.createTime+"由${sessionScope.sessionUser.name}创建</small>"
+						html +="<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">"
+						html +="<a class\"myHref\" remarkId = \""+data.retData.id+"\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>"
+						html +="&nbsp;&nbsp;&nbsp;&nbsp;"
+						html +="<a class=\"myHref\" remarkId = \""+data.retData.id+"\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-remove\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>"
+						html +="</div>"
+						html +="</div>"
+						html +="</div>";
+
+						$("#remarkDiv").before(html);
+
+						//关闭模态窗口
+						$("#editRemarkModal").modal("hide");
+
+					}else {
+						//失败
+						alert(data.message);
+					}
+				}
+			})
+		})
+
 	});
-	
+
+
 </script>
 
 </head>
@@ -153,7 +230,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 	</div>
 	
 	<!-- 备注 -->
-	<div style="position: relative; top: 30px; left: 40px;">
+	<div id="remarkDivList" style="position: relative; top: 30px; left: 40px;">
 		<div class="page-header">
 			<h4>备注</h4>
 		</div>
@@ -205,7 +282,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
 					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-					<button type="button" class="btn btn-primary">保存</button>
+					<button type="button" class="btn btn-primary" id="insertActivityRemarkBtn">保存</button>
 				</p>
 			</form>
 		</div>

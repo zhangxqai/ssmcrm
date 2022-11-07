@@ -383,6 +383,12 @@ public class ActivityController {
         return returnObject;
     }
 
+    /**
+     * 根据市场活动的id查询有关这条市场活动的备注全部备注消息
+     * @param id
+     * @param request
+     * @return
+     */
     @RequestMapping("/workbench/activity/selectActivityRemarkById.do")
     public Object selectActivityRemarkById(String id, HttpServletRequest request){
         //调用service方法查询，这个id的市场活动
