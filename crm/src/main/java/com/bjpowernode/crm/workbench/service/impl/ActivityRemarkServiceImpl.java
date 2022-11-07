@@ -1,5 +1,7 @@
 package com.bjpowernode.crm.workbench.service.impl;
 
+import com.bjpowernode.crm.commons.contants.Contants;
+import com.bjpowernode.crm.commons.domain.ReturnObject;
 import com.bjpowernode.crm.workbench.domain.ActivityRemark;
 import com.bjpowernode.crm.workbench.mapper.ActivityRemarkMapper;
 import com.bjpowernode.crm.workbench.service.ActivityRemarkService;
@@ -35,4 +37,22 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
     public int insertRemark(ActivityRemark activityRemark) {
         return activityRemarkMapper.insertRemark(activityRemark);
     }
+
+    /**
+     * 根据id对市场活动备注进行删除
+     * @param id
+     * @return
+     */
+    @Override
+    public int deleteRemark(String id) {
+
+        return activityRemarkMapper.deleteRemark(id);
+    }
+
+    @Override
+    public int updateRemark(ActivityRemark activityRemark) {
+        return activityRemarkMapper.updateRemark(activityRemark);
+    }
+
+
 }

@@ -18,4 +18,19 @@ public interface ActivityRemarkService {
      * @return
      */
     int insertRemark(ActivityRemark activityRemark);
+
+    /**
+     * 根据id对市场活动备注进行删除
+     * @param id
+     * @return
+     */
+    int deleteRemark(String id);
+
+    /**
+     * 市场活动备注修改
+     * @param activityRemark
+     * @return
+     */
+    int updateRemark(ActivityRemark activityRemark);
+
 }

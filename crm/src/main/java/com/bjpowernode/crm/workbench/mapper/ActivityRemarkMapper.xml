@@ -182,4 +182,21 @@
     insert into tbl_activity_remark (id,note_content,create_time,create_by,edit_flag,activity_id)
         values (#{id},#{noteContent},#{createTime},#{createBy},#{editFlag},#{activityId})
   </insert>
+
+  <!--根据id对市场活动备注进行删除-->
+  <delete id="deleteRemark" parameterType="string">
+    delete from tbl_activity_remark where id = #{id}
+  </delete>
+
+  <!--对市场活动备注进行修改-->
+  <update id="updateRemark" parameterType="com.bjpowernode.crm.workbench.domain.ActivityRemark">
+    update tbl_activity_remark set note_content=#{noteContent},edit_time=#{editTime},edit_by=#{editBy},edit_flag=#{editFlag}
+    where id = #{id}
+  </update>
+
+  <!--<insert id="updateRemark" parameterType="updateRemark">
+    insert into tbl_activity_remark (note_content,edit_time,edit_by,edit_flag)
+    values (#{noteContent},#{editTime},#{editBy}#{editFlag})
+    where id = #{id}
+  </insert>-->
 </mapper>

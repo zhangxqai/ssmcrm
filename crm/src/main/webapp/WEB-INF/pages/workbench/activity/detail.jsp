@@ -101,15 +101,15 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 						//成功，更新备注列表,动态拼接
 						var html = "";
 
-						html +="<div class=\"remarkDiv\" style=\"height: 60px;\">"
+						html +="<div id=\"div_"+data.retData.id+"\" class=\"remarkDiv\" style=\"height: 60px;\">"
 						html +="<img title=\"${sessionScope.sessionUser.name}\" src=\"image/user-thumbnail.png\" style=\"width: 30px; height:30px;\">"
 						html +="<div style=\"position: relative; top: -40px; left: 40px;\" >"
-						html +="<h5>"+data.retData.noteContent+"</h5>"
+						html +="<h5 id=\"h5"+data.retData.id+"\">"+data.retData.noteContent+"</h5>"
 						html +="<font color=\"gray\">市场活动</font> <font color=\"gray\">-</font> <b>${activity.name}</b> <small style=\"color: gray;\">"+data.retData.createTime+"由${sessionScope.sessionUser.name}创建</small>"
 						html +="<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">"
-						html +="<a class\"myHref\" remarkId = \""+data.retData.id+"\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>"
+						html +="<a class\"myHref\" name=\"updateA\" remarkId = \""+data.retData.id+"\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>"
 						html +="&nbsp;&nbsp;&nbsp;&nbsp;"
-						html +="<a class=\"myHref\" remarkId = \""+data.retData.id+"\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-remove\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>"
+						html +="<a class=\"myHref\" name=\"deleteA\" remarkId = \""+data.retData.id+"\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-remove\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>"
 						html +="</div>"
 						html +="</div>"
 						html +="</div>";
@@ -119,6 +119,107 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 						//关闭模态窗口
 						$("#editRemarkModal").modal("hide");
 
+					}else {
+						//失败
+						alert(data.message);
+					}
+				}
+			})
+		})
+
+		//为全部删除的按钮动态绑定click事件,a是指这个标签，中括号要括起来，name是属性，deleteA是值
+		$("#remarkDivList").on("click","a[name='deleteA']",function (){
+			
+			//收集参数
+			var id = $(this).attr("remarkId");
+			//收集好参数，就发送请求
+			$.ajax({
+				url:'workbench/activity/deleteRemark.do',
+				data:{
+					id:id
+				},
+				type: 'post',
+				dataType: 'json',
+				success:function (data){
+					//判断有没有删除成功
+					if (data.code =="1"){
+						//成功,直接在页面删除
+						$("#div_"+id).remove()
+
+					}else {
+						//失败
+						alert(data.message);
+					}
+				}
+			})
+		})
+
+		//为修改按钮绑定弹出模态窗口
+		$("#remarkDivList").on("click","a[name='updateA']",function (){
+			//这个先收集参数
+			var id = $(this).attr("remarkId");
+			//通过id查找
+			//var noteContent = $("#h5"+id).val();
+			//通过父子选择器，获取内容
+			var noteContent = $("#div_"+id+" h5").text();
+			//将这些内容写到模态窗口上
+			$("#edit-id").val(id);
+			$("#edit-noteContent").val(noteContent);
+			//现在模态窗口都有数据了，就能弹出模态窗口
+			$("#editRemarkModal").modal("show");
+
+			/*//之后就能直接发送请求，之前已经有数据了
+			$.ajax({
+				url:'workbench/activity/updateRemark.do',
+				data:{
+					id:id,
+					noteContent:noteContent
+				},
+				type:'post',
+				dataType:'json',
+				success:function (data){
+					//判断有没有修改成功
+					if (data.code =="1"){
+						//成功,将页面中的备注内容修改
+						$("#h_"+id).text(noteContent);
+						$("#editRemarkModal").modal("hide");
+					}else {
+						//失败
+						alert(data.message);
+					}
+				}
+			})*/
+
+		})
+
+		//为保存按钮绑定事件
+		$("#updateRemarkBtn").click(function (){
+
+			var id = $("#edit-id").val();
+			var noteContent = $("#edit-noteContent").val();
+
+			if (noteContent ==""){
+				alert("备注内容不能为空！");
+				return;
+			}
+
+			$.ajax({
+				url:'workbench/activity/updateRemark.do',
+				data:{
+					id:id,
+					noteContent:noteContent
+				},
+				type:'post',
+				dataType:'json',
+				success:function (data){
+					//判断有没有修改成功
+					if (data.code =="1"){
+						//成功,将页面中的备注内容修改
+
+						$("#editRemarkModal").modal("hide");
+
+						$("#div_"+id+" h5").text(noteContent);
+						$("#div_"+id+" small").text(" "+data.retData.editTime+" 由${sessionScope.sessionUser.name}修改");
 					}else {
 						//失败
 						alert(data.message);
@@ -149,6 +250,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" role="form">
+						<input type="hidden" id="edit-id">
                         <div class="form-group">
                             <label for="edit-noteContent" class="col-sm-2 control-label">内容</label>
                             <div class="col-sm-10" style="width: 81%;">
@@ -235,15 +337,15 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 			<h4>备注</h4>
 		</div>
 		<c:forEach items="${activityRemarkList}" var="remark" >
-			<div class="remarkDiv" style="height: 60px;">
+			<div id="div_${remark.id}" class="remarkDiv" style="height: 60px;">
 				<img title="${remark.createBy}" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 				<div style="position: relative; top: -40px; left: 40px;" >
 					<h5>${remark.noteContent}</h5>
 					<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;">${remark.editFlag=='0'?remark.createTime:remark.editTime} 由${remark.editFlag == '0'?remark.createBy:remark.editBy}${remark.editFlag == '0'?'创建':'修改'}</small>
 					<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-						<a class="myHref" remarkId = "${remark.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+						<a class="myHref" name="updateA" remarkId = "${remark.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 						&nbsp;&nbsp;&nbsp;&nbsp;
-						<a class="myHref" remarkId = "${remark.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+						<a class="myHref" name="deleteA" remarkId = "${remark.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
 					</div>
 				</div>
 			</div>
