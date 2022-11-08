@@ -1,28 +1,120 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
 %>
 <html>
 <head>
 	<base href="<%=basePath%>">
-	<meta charset="UTF-8">
+<meta charset="UTF-8">
 
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css" type="text/css" rel="stylesheet" />
 
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
+<script type="text/javascript" src="jquery/bs_pagination-master/localization/en.js"></script>
 
 <script type="text/javascript">
 
 	$(function(){
-		
-		
+		selectGetAllClue(1,10);
+		//为查询按钮绑定点击事件
+		$("#selectClueAllBtn").click(function (){
+			selectGetAllClue(1,10);
+		})
 		
 	});
+
+	//封装一个根据条件查询的函数
+	function selectGetAllClue(pageNo,pageSize){
+
+		//收集参数
+		var fullname = $("#query-fullname").val();
+		var company = $("#query-company").val();
+		var phone = $("#query-phone").val();
+		var source = $("#query-source").val();
+		var owner = $("#query-owner").val();
+		var mphone = $("#query-mphone").val();
+		var state = $("#query-state").val();
+
+		//不需要验证信息，发生请求，查询信息
+		$.ajax({
+			url:'workbench/clue/selectActivityAll.do',
+			data:{
+				fullname:fullname,
+				company:company,
+				phone:phone,
+				source:source,
+				owner:owner,
+				mphone:mphone,
+				state:state,
+				pageNo:pageNo,
+				pageSize:pageSize
+			},
+			type:'post',
+			dataType:'json',
+			success:function (data){
+				//到这里就说明返回了数据，将数据展示在页面中
+				var html = "";
+				//还需要将这些数据全部循环拼接出来
+				$.each(data.clueList,function (index,obj){
+
+					html += "<tr class=\"active\">"
+					html += "<td><input type=\"checkbox\" /></td>"
+					html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">"+obj.fullname+"</a></td>"
+					html += "<td>"+obj.company+"</td>"
+					html += "<td>"+obj.phone+"</td>"
+					html += "<td>"+obj.mphone+"</td>"
+					html += "<td>"+obj.source+"</td>"
+					html += "<td>"+obj.owner+"</td>"
+					html += "<td>"+obj.state+"</td>"
+					html += "</tr>"
+
+				})
+
+				//将循环出来的数据都拼接好
+				$("#tBody").html(html);
+
+				//在调用翻页插件是要计算
+				//计算总页数
+				var totalpages = 1;
+
+				if (data.totalRows%pageSize==0){
+					totalpages = data.totalRows/pageSize;
+				}else {
+					totalpages = parseInt(data.totalRows/pageSize)+1;
+				}
+
+				//使用翻页插件的，第一步先引入插件的依赖，第二步创建div，第三步在div中，调用这个插件的方法，
+				$("#demo_pag1").bs_pagination({
+
+					//里面有很多参数
+					currentPage:pageNo,//当前页号
+					rowsPerPage:pageSize,//每页显示条数
+					totalRows:data.totalRows,//总条数
+					totalPages:totalpages,//总页数，必填框
+
+					visiblePageLinks: 5,//最多显示多少个卡片数
+
+					showGoToPage: true,//显示跳转页数的按钮
+					showRowsPerPage: true,//每页显示条数
+					showRowsInfo: true,//显示记录条数
+
+					onChangePage:function (event,pageObj){
+						/*alert(pageObj.currentPage);
+                        alert(pageObj.totalRows);*/
+						selectGetAllClue(pageObj.currentPage,pageObj.rowsPerPage);
+					}
+				})
+
+			}
+		})
+	}
 	
 </script>
 </head>
@@ -362,9 +454,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 		</div>
 	</div>
 	
-	
-	
-	
+
 	<div>
 		<div style="position: relative; left: 10px; top: -10px;">
 			<div class="page-header">
@@ -383,28 +473,28 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">名称</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="query-fullname">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="query-company">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司座机</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="query-phone">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索来源</div>
-					  <select class="form-control">
+					  <select class="form-control" id="query-source">
 					  	  <option></option>
 					  	 <%-- <option>广告</option>
 						  <option>推销电话</option>
@@ -432,7 +522,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="query-owner">
 				    </div>
 				  </div>
 				  
@@ -441,14 +531,14 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">手机</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="query-mphone">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索状态</div>
-					  <select class="form-control">
+					  <select class="form-control" id="query-state">
 					  	<option></option>
 					  	<%--<option>试图联系</option>
 					  	<option>将来联系</option>
@@ -464,7 +554,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				    </div>
 				  </div>
 
-				  <button type="submit" class="btn btn-default">查询</button>
+				  <button type="button" id="selectClueAllBtn" class="btn btn-default">查询</button>
 				  
 				</form>
 			</div>
@@ -491,8 +581,8 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 							<td>线索状态</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
+					<tbody id="tBody">
+						<%--<tr>
 							<td><input type="checkbox" /></td>
 							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四先生</a></td>
 							<td>动力节点</td>
@@ -511,12 +601,16 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
                             <td>广告</td>
                             <td>zhangsan</td>
                             <td>已联系</td>
-                        </tr>
+                        </tr>--%>
 					</tbody>
 				</table>
+
+				<div id="demo_pag1"></div>
+
+
 			</div>
 			
-			<div style="height: 50px; position: relative;top: 60px;">
+			<%--<div style="height: 50px; position: relative;top: 60px;">
 				<div>
 					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
 				</div>
@@ -549,7 +643,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 						</ul>
 					</nav>
 				</div>
-			</div>
+			</div>--%>
 			
 		</div>
 		

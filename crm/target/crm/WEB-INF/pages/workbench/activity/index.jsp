@@ -429,6 +429,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				//先将查询到的市场活动列表遍历出来，拼接好
 				var html = "";
 				$.each(data.activityList,function (index,obj){
+
 					html += "<tr class=\"active\">";
 					html += "<td><input type=\"checkbox\" value='"+obj.id+"' /></td>";
 					html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/activity/selectActivityRemarkById.do?id="+obj.id+"'\">"+obj.name+"</a></td>";
