@@ -34,4 +34,18 @@ public interface ClueService {
      * @return
      */
     int deleteClue(String[] ids);
+
+    /**
+     * 根据id对线索进行修改
+     * @param clue
+     * @return
+     */
+    int updateClueById(Clue clue);
+
+    /**
+     * 根据id查询相对于的线索信息，为了修改模态窗口
+     * @param id
+     * @return
+     */
+    Clue selectByIdForEdit(String id);
 }

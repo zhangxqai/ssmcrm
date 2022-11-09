@@ -125,4 +125,54 @@ public class ClueController {
         return returnObject;
 
     }
+
+    @RequestMapping("/workbench/clue/selectByIdForEdit.do")
+    public @ResponseBody Object selectByIdForEdit(String id){
+
+        //封装数据，之后一个数据，直接调用service方法，查询线索信息
+        Clue clue = clueService.selectByIdForEdit(id);
+
+        //直接返回列表数据
+        return clue;
+    }
+
+    /**
+     * 根据id对线索进行修改
+     * @param clue
+     * @return
+     */
+    @RequestMapping("/workbench/clue/updateClueById.do")
+    public @ResponseBody Object updateClueById(Clue clue,HttpSession session){
+
+        User user = (User) session.getAttribute(Contants.SESSION_USER);
+        //先封装参数，修改人和修改时间没有，需要系统创建
+        clue.setEditBy(user.getId());
+        clue.setEditTime(DateUtils.formateDateTime(new Date()));
+
+        ReturnObject returnObject = new ReturnObject();
+
+        //封装好了就要调用service方法，修改数据
+        try {
+            int count = clueService.updateClueById(clue);
+
+            //先判断有没有修改成功
+            if(count > 0){
+
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject.setRetData(count);
+
+            }else {
+
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("系统忙，请稍后重试！");
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("系统忙，请稍后重试！");
+        }
+
+        return returnObject;
+    }
 }
