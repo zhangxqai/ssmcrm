@@ -20,4 +20,11 @@ public interface ClueService {
      * @return
      */
     int selectClueAllCount(Map<String,Object>map);
+
+    /**
+     * 创建线索
+     * @param clue
+     * @return
+     */
+    int insertClue(Clue clue);
 }

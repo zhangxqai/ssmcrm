@@ -28,4 +28,9 @@ public class ClueServiceImpl implements ClueService {
         int count = clueMapper.selectClueAllCount(map);
         return count;
     }
+
+    @Override
+    public int insertClue(Clue clue) {
+        return clueMapper.insertClue(clue);
+    }
 }

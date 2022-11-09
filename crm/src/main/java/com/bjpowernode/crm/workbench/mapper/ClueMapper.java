@@ -61,5 +61,17 @@ public interface ClueMapper {
      */
     List<Clue> selectClueAll(Map<String,Object> map);
 
+    /**
+     * 按条件查询出所有符合条件的总条数
+     * @param map
+     * @return
+     */
     int selectClueAllCount(Map<String,Object> map);
+
+    /**
+     * 创建线索
+     * @param clue
+     * @return
+     */
+    int insertClue(Clue clue);
 }

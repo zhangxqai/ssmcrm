@@ -1,5 +1,10 @@
 package com.bjpowernode.crm.workbench.web.controller;
 
+import com.bjpowernode.crm.commons.contants.Contants;
+import com.bjpowernode.crm.commons.domain.ReturnObject;
+import com.bjpowernode.crm.commons.utils.DateUtils;
+import com.bjpowernode.crm.commons.utils.UUIDUtils;
+import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.workbench.domain.Clue;
 import com.bjpowernode.crm.workbench.service.ClueService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,5 +50,45 @@ public class ClueController {
         retMap.put("totalRows",totalRows);
 
         return retMap;
+    }
+
+    /**
+     * 创建线索
+     * @param clue
+     * @param session
+     * @return
+     */
+    @RequestMapping("/workbench/clue/insertClue.do")
+    public @ResponseBody Object insertClue(Clue clue , HttpSession session){
+
+        User user = (User) session.getAttribute(Contants.SESSION_USER);
+        //封装参数
+        clue.setId(UUIDUtils.getUUID());
+        clue.setCreateTime(DateUtils.formateDateTime(new Date()));
+        clue.setCreateBy(user.getId());
+
+        ReturnObject returnObject = new ReturnObject();
+        try {
+            //封装好了，就能调用service方法，添加线索
+            int count = clueService.insertClue(clue);
+
+            //判断有没有添加成功
+            if (count > 0){
+                //成功
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject.setRetData(count);
+            }else {
+                //失败
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("系统忙，请稍后重试！");
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("系统忙，请稍后重试！");
+        }
+
+        return returnObject;
     }
 }

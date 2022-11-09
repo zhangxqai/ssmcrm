@@ -310,9 +310,11 @@
 
   <!--这个是查询符合条件的所有列表-->
   <select id="selectClueAll" parameterType="map" resultMap="BaseResultMap">
-    select c.id,c.fullname,c.company,c.phone,c.mphone,c.source,u1.name as owner,c.state
+    select c.id,c.fullname,c.company,c.phone,c.mphone,d1.value as source,u1.name as owner,d2.value as state
     from tbl_clue c
+    right join tbl_dic_value d1 on d1.id = c.source
     join tbl_user u1 on u1.id = c.owner
+    left join tbl_dic_value d2 on d2.id = c.state
     <where>
       <if test="fullname!=null and fullname!=''">
         and c.fullname like concat('%',#{fullname},'%')
@@ -324,7 +326,7 @@
         and c.phone like concat('%',#{phone},'%')
       </if>
       <if test="source!=null and source!=''">
-        and c.source = #{source}
+        and d1.value = #{source}
       </if>
       <if test="owner!=null and owner!=''">
         and u1.name like concat('%',#{owner},'%')
@@ -333,7 +335,7 @@
         and c.mphone like concat('%',#{mphone},'%')
       </if>
       <if test="state!=null and state!=''">
-        and c.state = #{state}
+        and d2.value = #{state}
       </if>
     </where>
     order by c.create_time desc
@@ -344,7 +346,9 @@
   <select id="selectClueAllCount" parameterType="map" resultType="int">
     select count(*)
     from tbl_clue c
+    right join tbl_dic_value d1 on d1.id = c.source
     join tbl_user u1 on u1.id = c.owner
+    left join tbl_dic_value d2 on d2.id = c.state
     <where>
       <if test="fullname!=null and fullname!=''">
         and c.fullname like concat('%',#{fullname},'fullname')
@@ -356,7 +360,7 @@
         and c.phone like concat('%',#{phone},'%')
       </if>
       <if test="source!=null and source!=''">
-        and c.source = #{source}
+        and d1.value = #{source}
       </if>
       <if test="owner!=null and owner!=''">
         and u1.name like concat('%',#{owner},'%')
@@ -365,12 +369,37 @@
         and c.mphone like concat('%',#{mphone},'%')
       </if>
       <if test="state!=null and state!=''">
-        and c.state = #{state}
+        and d2.value = #{state}
       </if>
     </where>
 
   </select>
 
-
+  <!--创建线索-->
+  <insert id="insertClue" parameterType="com.bjpowernode.crm.workbench.domain.Clue">
+    insert into  tbl_clue (
+      id,
+      fullname,
+      appellation,
+      owner,
+      company,
+      job,
+      email,
+      phone,
+      website,
+      mphone,
+      state,
+      source,
+      create_by,
+      create_time,
+      description,
+      contact_summary,
+      next_contact_time,
+      address)
+      values (
+        #{id},#{fullname},#{appellation},#{owner},#{company},#{job},#{email},#{phone},#{website},
+        #{mphone},#{state},#{source},#{createBy},#{createTime},#{description},#{contactSummary},#{nextContactTime},#{address}
+      )
+  </insert>
 
 </mapper>
