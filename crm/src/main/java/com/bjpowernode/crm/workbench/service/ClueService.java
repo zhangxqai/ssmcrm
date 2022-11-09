@@ -27,4 +27,11 @@ public interface ClueService {
      * @return
      */
     int insertClue(Clue clue);
+
+    /**
+     * 根据传进来的id列表进行删除
+     * @param ids
+     * @return
+     */
+    int deleteClue(String[] ids);
 }

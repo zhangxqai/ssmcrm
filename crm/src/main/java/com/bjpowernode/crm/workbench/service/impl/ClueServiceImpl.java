@@ -33,4 +33,10 @@ public class ClueServiceImpl implements ClueService {
     public int insertClue(Clue clue) {
         return clueMapper.insertClue(clue);
     }
+
+    @Override
+    public int deleteClue(String[] ids) {
+        int count = clueMapper.deleteClue(ids);
+        return count;
+    }
 }

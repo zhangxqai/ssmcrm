@@ -91,4 +91,38 @@ public class ClueController {
 
         return returnObject;
     }
+
+    /**
+     * 根据传进来的id列表进行删除
+     * @param
+     * @return
+     */
+    @RequestMapping("/workbench/clue/deleteClue.do")
+    public @ResponseBody Object deleteClue(String[] id){
+
+        ReturnObject returnObject = new ReturnObject();
+        try {
+
+            //封装参数，已经封装了就能直接调用service方法
+            int count = clueService.deleteClue(id);
+
+            //判断有没有删除成功
+            if (count > 0 ){
+                //删除成功
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject.setRetData(count);
+            }else {
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("系统忙，请稍后重试");
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("系统忙，请稍后重试");
+        }
+
+        return returnObject;
+
+    }
 }

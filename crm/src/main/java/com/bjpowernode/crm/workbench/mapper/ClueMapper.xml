@@ -402,4 +402,13 @@
       )
   </insert>
 
+  <!--根据传进来的id列表进行删除-->
+  <delete id="deleteClue" parameterType="string">
+    delete from tbl_clue
+    where id in
+    <foreach collection="array" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </delete>
+
 </mapper>

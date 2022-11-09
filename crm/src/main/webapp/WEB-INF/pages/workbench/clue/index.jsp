@@ -113,6 +113,79 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 
 		})
 
+		//为全选按钮绑定事件
+		$("#checkedAll").click(function (){
+
+			//第一步先判断有没有选上，该如何判断,第一步获取这个全选选框有没有选上，选上的是checked，如果是选上就是true
+			//第二步就要对下面的选框都勾选上，通过父子选择器选取
+			if (this.checked == true){
+				$("#tBody input[type='checkbox']").prop("checked",true);
+			}else {
+				$("#tBody input[type='checkbox']").prop("checked",false);
+			}
+
+		})
+
+		//如果全部选框选中，就给全选选上
+		$("#tBody").on("click","input[type=checkbox]",function (){
+
+			//判断这个长度是不是和选中的长度一样，如果是的话就全选
+			if ($("#tBody input[type=checkbox]").size() == $("#tBody input[type=checkbox]:checked").size()){
+				$("#checkedAll").prop("checked",true);
+			}else {
+				$("#checkedAll").prop("checked",false);
+			}
+
+		})
+
+		//为删除绑定单击事件，
+		$("#deleteBtn").click(function (){
+
+			if(window.confirm("确定要删除这些线索吗？")){
+
+				//先获取需要删除的id,怎么获取
+				var checkedIds = $("#tBody input[type='checkbox']:checked");
+
+				//获取好了就要先判断有没有选中
+				if (checkedIds.size() == "0"){
+					alert("请选择需要删除的线索！");
+					return;
+				}
+				//这里说明没有问题
+				//但是还需要循环遍历出来
+				var ids = "";
+				$.each(checkedIds,function (){
+					ids += "id="+this.value+"&";
+				})
+				//拼接好之后就是这个样子id=xxx&id=xxxx&id=xxx&
+				//这样就要把后面的&去掉
+				ids = ids.substr(0,ids.length-1);
+
+				//发送请求
+				$.ajax({
+					url:'workbench/clue/deleteClue.do',
+					data:ids,
+					type:'post',
+					dataType:'json',
+					success:function (data){
+						//判断有没有成功
+						if (data.code == "1"){
+							//成功,刷新列表
+							selectGetAllClue(1,$("#demo_pag1").bs_pagination('getOption','rowsPerPage'));
+							//提示信息
+							alert("成功删除"+data.retData+"线索");
+
+						}else {
+							//失败
+							alert(data.message);
+						}
+					}
+				})
+			}
+
+
+		})
+
 		//为时间做一个选项功能
 		$(".form-control_Date").datetimepicker({
 
@@ -163,7 +236,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				$.each(data.clueList,function (index,obj){
 
 					html += "<tr class=\"active\">"
-					html += "<td><input type=\"checkbox\" /></td>"
+					html += "<td><input type=\"checkbox\" value=\""+obj.id+"\"/></td>"
 					html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">"+obj.fullname+"</a></td>"
 					html += "<td>"+obj.company+"</td>"
 					html += "<td>"+obj.phone+"</td>"
@@ -661,7 +734,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button type="button" class="btn btn-primary" id="createClueModalBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
 				
@@ -670,7 +743,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				<table class="table table-hover">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td><input type="checkbox" /></td>
+							<td><input type="checkbox" id="checkedAll" /></td>
 							<td>名称</td>
 							<td>公司</td>
 							<td>公司座机</td>
