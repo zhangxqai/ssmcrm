@@ -5,13 +5,18 @@ import com.bjpowernode.crm.commons.domain.ReturnObject;
 import com.bjpowernode.crm.commons.utils.DateUtils;
 import com.bjpowernode.crm.commons.utils.UUIDUtils;
 import com.bjpowernode.crm.settings.domain.User;
+import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.domain.Clue;
+import com.bjpowernode.crm.workbench.domain.ClueRemark;
+import com.bjpowernode.crm.workbench.service.ActivityService;
+import com.bjpowernode.crm.workbench.service.ClueRemarkService;
 import com.bjpowernode.crm.workbench.service.ClueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +28,12 @@ public class ClueController {
 
     @Autowired
     private ClueService clueService;
+
+    @Autowired
+    private ClueRemarkService clueRemarkService;
+
+    @Autowired
+    private ActivityService activityService;
 
     @RequestMapping("/workbench/clue/selectActivityAll.do")
     public @ResponseBody Object selectActivityAll(String fullname,String company,String phone,String mphone,String source,String owner,String state,int pageNo,int pageSize){
@@ -174,5 +185,26 @@ public class ClueController {
         }
 
         return returnObject;
+    }
+
+    @RequestMapping("/workbench/clue/selectClueRemarkById.do")
+    public String selectClueRemarkById(String id, HttpServletRequest request){
+
+        //封装参数，没有参数直接调用service方法，查询
+        //查当前符合id的线索列表
+        Clue clue = clueService.selectForEditById(id);
+
+        //查符合当前id的线索备注表
+        List<ClueRemark> clueRemarkList = clueRemarkService.selectClueRemarkForById(id);
+
+        //查与线索不关联的市场活动列表
+        List<Activity> activityList = activityService.selectActivityForClueById(id);
+
+        //查好之后就要将这些数据封装好，封装到request域中，因为一会要跳转页面
+        request.setAttribute("clue",clue);
+        request.setAttribute("clueRemarkList",clueRemarkList);
+        request.setAttribute("activityList",activityList);
+
+        return "workbench/clue/detail";
     }
 }

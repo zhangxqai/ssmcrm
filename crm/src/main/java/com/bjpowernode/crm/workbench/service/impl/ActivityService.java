@@ -55,4 +55,9 @@ public class ActivityService implements com.bjpowernode.crm.workbench.service.Ac
     public int insertActivityByList(List<Activity> activityList) {
         return activityMapper.insertActivityByList(activityList);
     }
+
+    @Override
+    public List<Activity> selectActivityForClueById(String id) {
+        return activityMapper.selectActivityForClueById(id);
+    }
 }

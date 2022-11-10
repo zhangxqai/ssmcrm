@@ -95,4 +95,11 @@ public interface ClueMapper {
      * @return
      */
     Clue selectByIdForEdit(String id);
+
+    /**
+     * 跳转线索详细信息表
+     * @param id
+     * @return
+     */
+    Clue selectForEditById(String id);
 }

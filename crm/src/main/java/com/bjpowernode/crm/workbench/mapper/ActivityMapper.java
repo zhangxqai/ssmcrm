@@ -103,4 +103,11 @@ public interface ActivityMapper {
      * @return
      */
     int insertActivityByList(List<Activity> activityList);
+
+    /**
+     * 为了在线索详细信息页面上的市场活动列表上体现，根据id去查
+     * @param id
+     * @return
+     */
+    List<Activity> selectActivityForClueById(String id);
 }

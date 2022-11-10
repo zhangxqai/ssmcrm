@@ -75,5 +75,15 @@ public class ClueServiceImpl implements ClueService {
         return clueMapper.selectByIdForEdit(id);
     }
 
+    /**
+     * 跳转线索详细信息表
+     * @param id
+     * @return
+     */
+    @Override
+    public Clue selectForEditById(String id) {
+        return clueMapper.selectForEditById(id);
+    }
+
 
 }
