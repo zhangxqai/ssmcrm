@@ -17,6 +17,61 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 	var cancelAndSaveBtnDefault = true;
 	
 	$(function(){
+
+
+		//为线索备注的保存添加点击事件
+		$("#saveReamarkBtn").click(function (){
+
+			//收集数据
+			var clueId = "${clue.id}"
+			var noteContent = $.trim($("#remark").val());
+
+			if (noteContent==""){
+				return;
+			}
+
+			//收集好数据就发送请求
+			$.ajax({
+				url:'workbench/clue/insertClueRemark.do',
+				data:{
+					clueId:clueId,
+					noteContent:noteContent
+				},
+				type:'post',
+				dataType:'json',
+				success:function (data){
+					//判断有没有成功
+					if (data.code){
+						//成功，在备注添加一条
+						//先拼接字符串
+						var html = "";
+						html +="<div class=\"remarkDiv\" style=\"height: 60px;\">";
+						html +="<img title=\"zhangsan\" src=\"image/user-thumbnail.png\" style=\"width: 30px; height:30px;\">";
+						html +="<div style=\"position: relative; top: -40px; left: 40px;\" >";
+						html +="<h5>"+data.retData.noteContent+"</h5>";
+						html +="<font color=\"gray\">线索</font> <font color=\"gray\">-</font> <b>${clue.fullname}${clue.appellation}-${clue.company}</b> <small style=\"color: gray;\"> "+data.retData.createTime+" 由"+data.retData.createBy+"</small>";
+						html +="<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">";
+						html +="<a class=\"myHref\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
+						html +="&nbsp;&nbsp;&nbsp;&nbsp;";
+						html +="<a class=\"myHref\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-remove\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
+						html +="</div>";
+						html +="</div>";
+						html +="</div>";
+
+						//拼接，在那个地方拼接呢？
+						$("#remarkDiv").before(html);
+
+						//保存好了之后将内容清空
+						$("#remark").val("");
+					}else {
+						//失败
+						alert("备注添加失败")
+					}
+				}
+			})
+
+		})
+
 		$("#remark").focus(function(){
 			if(cancelAndSaveBtnDefault){
 				//设置remarkDiv的高度为130px
@@ -273,7 +328,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
 					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-					<button type="button" class="btn btn-primary">保存</button>
+					<button type="button" id="saveReamarkBtn" class="btn btn-primary">保存</button>
 				</p>
 			</form>
 		</div>

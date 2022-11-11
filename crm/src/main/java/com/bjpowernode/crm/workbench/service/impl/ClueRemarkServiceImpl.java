@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service("clueRemarkService")
-public class ClueRemarkByIdImpl implements ClueRemarkService {
+public class ClueRemarkServiceImpl implements ClueRemarkService {
 
     @Autowired
     private ClueRemarkMapper clueRemarkMapper;
@@ -22,6 +22,16 @@ public class ClueRemarkByIdImpl implements ClueRemarkService {
     @Override
     public List<ClueRemark> selectClueRemarkForById(String id) {
         return clueRemarkMapper.selectClueRemarkForById(id);
+    }
+
+    /**
+     * 对线索备注进行添加操作的
+     * @param clueRemark
+     * @return
+     */
+    @Override
+    public int insertClueRemark(ClueRemark clueRemark) {
+        return clueRemarkMapper.insertClueRemark(clueRemark);
     }
 
 }

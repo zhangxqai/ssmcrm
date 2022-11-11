@@ -116,8 +116,6 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 
 						$("#remarkDiv").before(html);
 
-						//关闭模态窗口
-						$("#editRemarkModal").modal("hide");
 
 					}else {
 						//失败

@@ -60,4 +60,11 @@ public interface ClueRemarkMapper {
      */
     List<ClueRemark>  selectClueRemarkForById(String id);
 
+    /**
+     * 对线索备注进行添加操作的
+     * @param clueRemark
+     * @return
+     */
+    int insertClueRemark(ClueRemark clueRemark);
+
 }

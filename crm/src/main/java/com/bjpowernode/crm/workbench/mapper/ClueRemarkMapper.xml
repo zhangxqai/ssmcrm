@@ -174,5 +174,26 @@
     join tbl_user u1 on u1.id = cr.create_by
     left join tbl_user u2 on u2.id = cr.edit_by
     where cr.clue_id = #{id}
+    order by cr.create_time asc
   </select>
+
+  <!--对线索备注进行添加操作的-->
+  <insert id="insertClueRemark" parameterType="com.bjpowernode.crm.workbench.domain.ClueRemark">
+    insert into tbl_clue_remark (
+        id,
+        note_content,
+        create_by,
+        create_time,
+        edit_flag,
+        clue_id
+        )
+        values (
+         #{id},
+         #{noteContent},
+         #{createBy},
+         #{createTime},
+         #{editFlag},
+         #{clueId}
+         )
+  </insert>
 </mapper>
