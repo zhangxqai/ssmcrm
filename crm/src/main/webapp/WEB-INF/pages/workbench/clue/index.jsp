@@ -368,7 +368,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 
 					html += "<tr class=\"active\">"
 					html += "<td><input type=\"checkbox\" value=\""+obj.id+"\"/></td>"
-					html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.jsp';\">"+obj.fullname+"</a></td>"
+					html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/clue/selectClueRemarkById.do?id="+obj.id+"';\">"+obj.fullname+"</a></td>"
 					html += "<td>"+obj.company+"</td>"
 					html += "<td>"+obj.phone+"</td>"
 					html += "<td>"+obj.mphone+"</td>"

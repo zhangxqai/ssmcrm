@@ -168,10 +168,11 @@
 
   <!--根据id查询出与这条线索有关的线索备注-->
   <select id="selectClueRemarkForById" parameterType="string" resultMap="BaseResultMap">
-    select cr.id,cr.note_content,u1.name as create_by,cr.create_time,u2.name as edit_by,cr.edit_time,cr.edit_flag
+    select cr.id,cr.note_content,u1.name as create_by,cr.create_time,
+           u2.name as edit_by,cr.edit_time,cr.edit_flag
     from tbl_clue_remark cr
     join tbl_user u1 on u1.id = cr.create_by
-    join tbl_user u2 on u2.id = cr.edit_by
+    left join tbl_user u2 on u2.id = cr.edit_by
     where cr.clue_id = #{id}
   </select>
 </mapper>

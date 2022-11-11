@@ -301,11 +301,11 @@
 
   <!--为了在线索详细信息页面上的市场活动列表上体现-->
   <select id="selectActivityForClueById" parameterType="string" resultMap="BaseResultMap">
-    select a.id,a.name,a.start_date,a.end_date,u1.name as owner
+    select a.id,a.name,a.start_date,a.end_date,u.name as owner
     from tbl_activity a
-    left tbl_user u1 on u1.id = a.owner
-    join tbl_clue_activity_relation car on car.activity_id = a.id
-    where car.clue.id = #{id}
+    join tbl_user u on u.id = a.owner
+    join tbl_clue_activity_relation car on car.activity_id=a.id
+    where car.clue_id = #{id}
   </select>
 
 </mapper>
