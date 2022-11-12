@@ -59,4 +59,18 @@ public interface ActivityService {
      * @return
      */
     List<Activity> selectActivityForClueById(String id);
+
+    /**
+     * 为了线索关联市场活动查询全部信息
+     * @param map
+     * @return
+     */
+    List<Activity> selectForClueRelationActivityByName(Map<String,Object> map);
+
+    /**
+     * 为了线索关联市场活动查询条数息
+     * @param map
+     * @return
+     */
+    int selectForClueRelationActivityCount(Map<String,Object> map);
 }

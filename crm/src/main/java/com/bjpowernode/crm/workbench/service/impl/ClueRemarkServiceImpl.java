@@ -34,4 +34,19 @@ public class ClueRemarkServiceImpl implements ClueRemarkService {
         return clueRemarkMapper.insertClueRemark(clueRemark);
     }
 
+    /**
+     * 根据id对线索进行修改
+     * @param id
+     * @return
+     */
+    @Override
+    public int deleteClueRemarkById(String id) {
+        return clueRemarkMapper.deleteClueRemarkById(id);
+    }
+
+    @Override
+    public int updateClueRemarkById(ClueRemark clueRemark) {
+        return clueRemarkMapper.updateClueRemarkById(clueRemark);
+    }
+
 }

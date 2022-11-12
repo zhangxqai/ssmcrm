@@ -308,4 +308,40 @@
     where car.clue_id = #{id}
   </select>
 
+  <!--为了线索关联市场活动查询全部信息-->
+  <select id="selectForClueRelationActivityByName" parameterType="map" resultMap="BaseResultMap">
+    select a.id,a.name,a.start_date,a.end_date,u.name as owner
+    from tbl_activity a
+    join tbl_user u on u.id=a.owner
+    <where>
+      <if test="name != null and name != ''">
+        and a.name like concat('%',#{name},'%')
+      </if>
+    </where>
+    and a.id not in(
+        select activity_id
+        from tbl_clue_activity_relation
+        where clue_id = #{clueId}
+    )
+    order by a.create_time desc
+    limit #{beginNo},#{pageSize}
+  </select>
+
+  <!--为了线索关联市场活动查询条数息-->
+  <select id="selectForClueRelationActivityCount" parameterType="map" resultType="int">
+    select count(*)
+    from tbl_activity a
+    join tbl_user u on u.id=a.owner
+    <where>
+      <if test="name != null and name != ''">
+        and a.name like concat('%',#{name},'%')
+      </if>
+    </where>
+    and a.id not in(
+    select activity_id
+    from tbl_clue_activity_relation
+    where clue_id = #{clueId}
+    )
+  </select>
+
 </mapper>

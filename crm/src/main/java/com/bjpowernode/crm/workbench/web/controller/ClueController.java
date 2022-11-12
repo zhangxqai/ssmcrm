@@ -187,6 +187,12 @@ public class ClueController {
         return returnObject;
     }
 
+    /**
+     * 根据id对线索详细信息进行查询
+     * @param id
+     * @param request
+     * @return
+     */
     @RequestMapping("/workbench/clue/selectClueRemarkById.do")
     public String selectClueRemarkById(String id, HttpServletRequest request){
 
@@ -206,5 +212,28 @@ public class ClueController {
         request.setAttribute("activityList",activityList);
 
         return "workbench/clue/detail";
+    }
+
+    @RequestMapping("/workbench/clue/selectForClueRelationActivityAll.do")
+    //为了线索关联市场活动查询全部信息
+    public @ResponseBody Object selectForClueRelationActivityAll(String name,String clueId,int pageNo,int pageSize){
+
+        //封装收集到数据
+        Map<String,Object> map = new HashMap<>();
+        map.put("name",name);
+        map.put("clueId",clueId);
+        map.put("beginNo",(pageNo-1)*pageSize);
+        map.put("pageSize",pageSize);
+
+        //封装好数据就可以调用service方法
+        List<Activity> activityList = activityService.selectForClueRelationActivityByName(map);
+        int totalRows =activityService.selectForClueRelationActivityCount(map);
+
+        //将这些数据在封装好送到前端
+        Map<String,Object> retmap = new HashMap<>();
+        retmap.put("activityList",activityList);
+        retmap.put("totalRows",totalRows);
+
+        return retmap;
     }
 }

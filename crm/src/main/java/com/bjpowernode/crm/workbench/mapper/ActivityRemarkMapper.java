@@ -80,4 +80,6 @@ public interface ActivityRemarkMapper {
      * @return
      */
     int updateRemark(ActivityRemark activityRemark);
+
+
 }

@@ -60,4 +60,14 @@ public class ActivityService implements com.bjpowernode.crm.workbench.service.Ac
     public List<Activity> selectActivityForClueById(String id) {
         return activityMapper.selectActivityForClueById(id);
     }
+
+    @Override
+    public List<Activity> selectForClueRelationActivityByName(Map<String, Object> map) {
+        return activityMapper.selectForClueRelationActivityByName(map);
+    }
+
+    @Override
+    public int selectForClueRelationActivityCount(Map<String, Object> map) {
+        return activityMapper.selectForClueRelationActivityCount(map);
+    }
 }

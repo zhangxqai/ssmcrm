@@ -110,4 +110,13 @@ public interface ActivityMapper {
      * @return
      */
     List<Activity> selectActivityForClueById(String id);
+
+    /**
+     * 为了线索关联市场活动查询全部信息
+     * @param name
+     * @return
+     */
+    List<Activity> selectForClueRelationActivityByName(Map<String,Object> map);
+
+    int selectForClueRelationActivityCount(Map<String,Object> map);
 }
