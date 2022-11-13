@@ -344,4 +344,16 @@
     )
   </select>
 
+  <!--根据id数组查询市场活动信息-->
+  <select id="selectForClueRelationByIds" parameterType="string" resultMap="BaseResultMap">
+    select a.id,a.name,a.start_date,a.end_date,u.name as owner
+    from tbl_activity a
+    join tbl_user u on u.id=a.owner
+    where a.id in
+    <foreach collection="array" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </select>
+
+
 </mapper>

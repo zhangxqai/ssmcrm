@@ -1,6 +1,7 @@
 package com.bjpowernode.crm.workbench.service.impl;
 
 import com.bjpowernode.crm.workbench.domain.Activity;
+import com.bjpowernode.crm.workbench.domain.ClueActivityRelation;
 import com.bjpowernode.crm.workbench.mapper.ActivityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,4 +71,17 @@ public class ActivityService implements com.bjpowernode.crm.workbench.service.Ac
     public int selectForClueRelationActivityCount(Map<String, Object> map) {
         return activityMapper.selectForClueRelationActivityCount(map);
     }
+
+    /**
+     * 根据id数组查询市场活动信息
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<Activity> selectForClueRelationByIds(String[] ids) {
+        return activityMapper.selectForClueRelationByIds(ids);
+    }
+
+
+
 }

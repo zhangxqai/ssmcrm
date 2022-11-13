@@ -2,6 +2,7 @@ package com.bjpowernode.crm.workbench.service;
 
 
 import com.bjpowernode.crm.workbench.domain.Activity;
+import com.bjpowernode.crm.workbench.domain.ClueActivityRelation;
 
 import java.util.List;
 import java.util.Map;
@@ -73,4 +74,13 @@ public interface ActivityService {
      * @return
      */
     int selectForClueRelationActivityCount(Map<String,Object> map);
+
+    /**
+     * 根据id数组查询市场活动信息
+     * @param ids
+     * @return
+     */
+    List<Activity> selectForClueRelationByIds(String[] ids);
+
+
 }

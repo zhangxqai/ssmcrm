@@ -114,7 +114,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 						html +="</div>";
 
 						//拼接，在那个地方拼接呢？
-						$("#remarkDiv").before(html);
+						$("#remarkDiv").append(html);
 
 						//保存好了之后将内容清空
 						$("#remark").val("");
@@ -240,6 +240,123 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 
 		})
 
+		//为关联市场活动模态窗口的全选框绑定事件
+		$("#checkedAll").click(function (){
+			//那么下面的列表都要选上，通过父子选择器选择
+			if (this.checked == true){
+
+				$("#activityTBody input[type='checkbox']").prop("checked",true);
+
+			}else {
+
+				$("#activityTBody input[type='checkbox']").prop("checked",false);
+			}
+
+		})
+
+		//为选择框绑定全选
+		$("#activityTBody").on("click","input[type='checkbox']",function (){
+
+			//判断这些选中的框有没有相等这些框的数量
+			if ($("#activityTBody input[type='checkbox']").size() == $("#activityTBody input[type='checkbox']:checked").size()){
+				$("#checkedAll").prop("checked",true);
+			}else {
+				$("#checkedAll").prop("checked",false);
+			}
+
+		})
+
+		//为保存按钮绑定事件
+		$("#relationClueActivityBtn").click(function (){
+			//收集数据,通过父子选择器获取选中的id
+			var activityIds = $("#activityTBody input[type='checkbox']:checked");
+			//判断获取的id数有多少个，
+			if(activityIds.size() == 0){
+				alert("关联的市场活动条数不能为0!");
+				return;
+			}
+
+			//能到这里就是正常的
+			//循环获得到的id
+			var ids = "";
+			$.each(activityIds,function (){
+				ids += "activityId="+this.value+"&";
+			})
+
+			//后面还有一个&符号要去掉
+			/*var ids = ids.substr(0,ids.length-1);*/
+
+			//还要再将clieId拼接上
+			ids += "clueId=${clue.id}";
+
+			//发送请求
+			$.ajax({
+				url:'workbench/clue/insertClueActivityRelation.do',
+				data:ids,
+				type:'post',
+				dataType:'json',
+				success:function (data){
+					//判断有没有修改成功
+					if (data.code == "1"){
+						//成功,刷新列表
+						var html = "";
+
+						//回来有很多数据，要循环
+						$.each(data.retData,function (index,obj){
+							html += "<tr id=\"tr_"+obj.id+"\">";
+							html += "<td>"+obj.name+"</td>";
+							html += "<td>"+obj.startDate+"</td>";
+							html += "<td>"+obj.endDate+"</td>";
+							html += "<td>"+obj.owner+"</td>";
+							html += "<td><a href=\"javascript:void(0);\" name=\"relieveA\" activityId=\""+obj.id+"\" style=\"text-decoration: none;\"><span class=\"glyphicon glyphicon-remove\"></span>解除关联</a></td>";
+							html += "</tr>";
+						})
+
+						$("#aTBody").append(html);
+
+						//关闭模态窗口
+						$("#bundModal").modal("hide");
+
+
+					}else {
+						//失败
+						alert(data.message);
+					}
+				}
+			})
+		})
+
+		//为解除按钮绑定事件，使用父子选择器选中
+		$("#aTBody").on("click","a[name='relieveA']",function (){
+			//获取数据
+			var activityId = $(this).attr("activityId");
+			var clueId = "${clue.id}"
+			//发送请求
+			$.ajax({
+				url:'workbench/clue/deleteClueActivityRelationById.do',
+				data:{
+					activityId:activityId,
+					clueId:clueId
+				},
+				type:'post',
+				dataType:'json',
+				success:function (data){
+					//判断有没有删除成功
+					if (data.code == "1"){
+						//成功，删除需要删除的市场活动关联信息
+						$("#tr_"+activityId).remove();
+
+						//关闭模态窗口
+						$("#bundModal").modal("hide");
+
+					}else {
+						//失败
+						alert(data.message);
+					}
+				}
+			})
+		})
+
 	});
 
 
@@ -271,7 +388,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				var html = "";
 				$.each(data.activityList,function (index,obj){
 					html += "<tr>";
-					html += "<td><input type=\"checkbox\"/></td>";
+					html += "<td><input value=\""+obj.id+"\" type=\"checkbox\"/></td>";
 					html += "<td>"+obj.name+"</td>";
 					html += "<td>"+obj.startDate+"</td>";
 					html += "<td>"+obj.endDate+"</td>";
@@ -343,7 +460,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 					<table id="activityTable" class="table table-hover" style="width: 900px; position: relative;top: 10px;">
 						<thead>
 							<tr style="color: #B3B3B3;">
-								<td><input type="checkbox"/></td>
+								<td><input id="checkedAll"  type="checkbox"/></td>
 								<td>名称</td>
 								<td>开始日期</td>
 								<td>结束日期</td>
@@ -374,7 +491,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				<div id="demo_pag1"></div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">关联</button>
+					<button type="button" class="btn btn-primary" id="relationClueActivityBtn">关联</button>
 				</div>
 			</div>
 		</div>
@@ -580,12 +697,12 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 	
 	<!-- 市场活动 -->
 	<div>
-		<div style="position: relative; top: 60px; left: 40px;">
+		<div  style="position: relative; top: 60px; left: 40px;">
 			<div class="page-header">
 				<h4>市场活动</h4>
 			</div>
-			<div style="position: relative;top: 0px;">
-				<table class="table table-hover" style="width: 900px;">
+			<div  style="position: relative;top: 0px;">
+				<table  class="table table-hover" style="width: 900px;">
 					<thead>
 						<tr style="color: #B3B3B3;">
 							<td>名称</td>
@@ -595,14 +712,14 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 							<td></td>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="aTBody">
 						<c:forEach items="${activityList}" var="a">
-							<tr>
+							<tr id="tr_${a.id}">
 								<td>${a.name}</td>
 								<td>${a.startDate}</td>
 								<td>${a.endDate}</td>
 								<td>${a.owner}</td>
-								<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
+								<td><a href="javascript:void(0);" name="relieveA" activityId="${a.id}" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
 							</tr>
 						</c:forEach>
 						<%--<tr>
@@ -623,7 +740,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				</table>
 			</div>
 			
-			<div>
+			<div >
 				<%--data-toggle="modal" data-target="#bundModal"--%>
 				<a href="javascript:void(0);" id="relationActivityBtn" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
 			</div>
