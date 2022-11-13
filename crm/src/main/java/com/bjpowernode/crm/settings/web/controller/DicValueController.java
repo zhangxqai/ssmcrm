@@ -40,4 +40,19 @@ public class DicValueController {
         return "workbench/clue/index";
     }
 
+    @RequestMapping("/workbench/transaction/selectDicValueForTransaction.do")
+    public String selectDicValueForTransaction(HttpServletRequest request){
+        //封装数据，没有数据就能直接调用service方法
+        List<DicValue> stageList = dicValueService.selectDicValue("stage");
+        List<DicValue> transactionTypeList = dicValueService.selectDicValue("transactionType");
+        List<DicValue> sourceList = dicValueService.selectDicValue("source");
+
+        //查询好之后就要封装这些数据到request中
+        request.setAttribute("stageList",stageList);
+        request.setAttribute("transactionTypeList",transactionTypeList);
+        request.setAttribute("sourceList",sourceList);
+
+        //跳转页面
+        return "workbench/transaction/index";
+    }
 }
