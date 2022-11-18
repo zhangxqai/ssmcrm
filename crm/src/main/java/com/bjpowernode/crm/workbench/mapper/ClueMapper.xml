@@ -442,4 +442,12 @@
     where c.id = #{id}
   </select>
 
+  <!--根据id为转换查询线索信息-->
+  <select id="selectForConVersionById" parameterType="string" resultMap="BaseResultMap">
+    select c.id,c.fullname,c.company,d.value as appellation,u.name as owner
+    from tbl_clue c
+    join tbl_user u on  u.id = c.owner
+    left join tbl_dic_value d on d.id = c.appellation
+    where c.id = #{id}
+  </select>
 </mapper>

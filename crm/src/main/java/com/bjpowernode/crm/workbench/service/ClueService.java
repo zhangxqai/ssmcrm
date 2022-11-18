@@ -55,4 +55,17 @@ public interface ClueService {
      * @return
      */
     Clue selectForEditById(String id);
+
+    /**
+     * 根据id为转换查询线索信息
+     * @param id
+     * @return
+     */
+    Clue selectForConVersionById(String id);
+
+    /**
+     * 根据封装好的参数去查询相对应的线索，然后添加客户和联系人
+     * @param map
+     */
+    void insertCustomerAndContacts(Map<String,Object> map);
 }

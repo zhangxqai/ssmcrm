@@ -102,4 +102,11 @@ public interface ClueMapper {
      * @return
      */
     Clue selectForEditById(String id);
+
+    /**
+     * 根据id为转换查询线索信息
+     * @param id
+     * @return
+     */
+    Clue selectForConVersionById(String id);
 }

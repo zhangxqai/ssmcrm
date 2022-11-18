@@ -4,10 +4,13 @@ import com.bjpowernode.crm.commons.contants.Contants;
 import com.bjpowernode.crm.commons.domain.ReturnObject;
 import com.bjpowernode.crm.commons.utils.DateUtils;
 import com.bjpowernode.crm.commons.utils.UUIDUtils;
+import com.bjpowernode.crm.settings.domain.DicValue;
 import com.bjpowernode.crm.settings.domain.User;
+import com.bjpowernode.crm.settings.service.DicValueService;
 import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.domain.Clue;
 import com.bjpowernode.crm.workbench.domain.ClueRemark;
+import com.bjpowernode.crm.workbench.domain.Customer;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.ClueRemarkService;
 import com.bjpowernode.crm.workbench.service.ClueService;
@@ -34,6 +37,11 @@ public class ClueController {
 
     @Autowired
     private ActivityService activityService;
+
+    @Autowired
+    private DicValueService dicValueService;
+
+
 
     @RequestMapping("/workbench/clue/selectActivityAll.do")
     public @ResponseBody Object selectActivityAll(String fullname,String company,String phone,String mphone,String source,String owner,String state,int pageNo,int pageSize){
@@ -235,5 +243,45 @@ public class ClueController {
         retmap.put("totalRows",totalRows);
 
         return retmap;
+    }
+
+    @RequestMapping("/workbench/clue/selectForConVersionById.do")
+    public String selectForConVersionById(String id,HttpServletRequest request){
+        //封装参数，已经封装好了直接调用service方法
+        Clue clue = clueService.selectForConVersionById(id);
+        //还有称呼的数据要查询
+
+        List<DicValue> stageList = dicValueService.selectDicValue("stage");
+
+        //查好之后将这些信息存到request中
+        request.setAttribute("clue",clue);
+
+        request.setAttribute("stageList",stageList);
+
+        //跳转页面
+        return "workbench/clue/convert";
+
+    }
+
+    @RequestMapping("/workbench/clue/insertConvert.do")
+    public @ResponseBody Object insertConvert(String ClueId,HttpSession session){
+
+        //先收集参数,封装数据
+        Map<String,Object> map = new HashMap<>();
+        map.put("id",ClueId);
+        map.put(Contants.SESSION_USER,session.getAttribute(Contants.SESSION_USER));
+
+
+
+        try {
+            //封装好了之后就要调用service方法
+            //由于这个是需要操作数据库的需要try catch,不需要返回数据如果有错误就是会捕捉到直接返回错误信息
+            clueService.insertCustomerAndContacts(map);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
