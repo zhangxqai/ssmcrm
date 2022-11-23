@@ -109,4 +109,11 @@ public interface ClueMapper {
      * @return
      */
     Clue selectForConVersionById(String id);
+
+    /**
+     * 为了线索转换根据线索id对线索进行删除
+     * @param id
+     * @return
+     */
+    int deleteFroConversionBuId(String id);
 }

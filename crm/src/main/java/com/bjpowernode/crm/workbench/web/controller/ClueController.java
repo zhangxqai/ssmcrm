@@ -263,25 +263,69 @@ public class ClueController {
 
     }
 
+    /**
+     * 根据传入的信息，创建客户和联系人，还需要判断是否创建交易
+     * @param clueId
+     * @param isCreateTran
+     * @param money
+     * @param TransactionName
+     * @param expectedDate
+     * @param stage
+     * @param activityId
+     * @param session
+     * @return
+     */
     @RequestMapping("/workbench/clue/insertConvert.do")
-    public @ResponseBody Object insertConvert(String ClueId,HttpSession session){
+    public @ResponseBody Object insertConvert(String clueId,String isCreateTran,String money,String TransactionName,String expectedDate,String stage,String activityId,HttpSession session){
 
         //先收集参数,封装数据
         Map<String,Object> map = new HashMap<>();
-        map.put("id",ClueId);
+        map.put("clueId",clueId);
+        map.put("money",money);
+        map.put("name",TransactionName);
+        map.put("expectedDate",expectedDate);
+        map.put("stage",stage);
+        map.put("activityId",activityId);
+        map.put("isCreateTran",isCreateTran);
         map.put(Contants.SESSION_USER,session.getAttribute(Contants.SESSION_USER));
 
-
-
+        ReturnObject returnObject = new ReturnObject();
         try {
             //封装好了之后就要调用service方法
             //由于这个是需要操作数据库的需要try catch,不需要返回数据如果有错误就是会捕捉到直接返回错误信息
             clueService.insertCustomerAndContacts(map);
 
+            //如果没有问题就是能够正确的执行了
+            returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
         }catch (Exception e){
             e.printStackTrace();
+            returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("系统忙，请稍后重试......");
         }
 
-        return null;
+        return returnObject;
+    }
+
+    /**
+     * 为了转换线索查询市场活动，根据市场活动的名称查询符合条件的市场活动
+     * @param name
+     * @return
+     */
+    @RequestMapping("/workbench/clue/selectActivityForConversion.do")
+    public @ResponseBody Object selectActivityForConversion(String name,String clueId){
+        //收集好数据，封装数据
+        Map<String,Object> map = new HashMap<>();
+        map.put("name",name);
+        map.put("clueId",clueId);
+        //直接调用service方法
+        List<Activity> activityList = activityService.selectActivityForConversion(map);
+
+        //返回的数据直接返回去
+        return activityList;
+    }
+
+    @RequestMapping("/workbench/clue/jumpForIndex.do")
+    public String jumpForIndex(){
+        return "workbench/clue/index";
     }
 }

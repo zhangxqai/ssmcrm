@@ -363,4 +363,43 @@
       </if>
     </where>
   </select>
+
+  <!--在线索中转换中，为交易创建信息-->
+  <insert id="insertTransaction" parameterType="com.bjpowernode.crm.workbench.domain.Transaction">
+    insert into tbl_transaction (
+        id,
+        owner,
+        money,
+        name,
+        expected_date,
+        customer_id,
+        stage,
+        type,
+        source,
+        activity_id,
+        contacts_id,
+        create_by,
+        create_time,
+        description,
+        contact_summary,
+        next_contact_time
+    ) values (
+        #{id},
+        #{owner},
+        #{money},
+        #{name},
+        #{expectedDate},
+        #{customerId},
+        #{stage},
+        #{type},
+        #{source},
+        #{activityId},
+        #{contactsId},
+        #{createBy},
+        #{createTime},
+        #{description},
+        #{contactSummary},
+        #{nextContactTime}
+        )
+  </insert>
 </mapper>

@@ -165,4 +165,22 @@
       tran_id = #{tranId,jdbcType=CHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+
+  <insert id="insertTransactionRemark" parameterType="com.bjpowernode.crm.workbench.domain.TransactionRemark">
+    insert into tbl_transaction_remark (
+        id,
+        note_content,
+        create_by,
+        create_time,
+        edit_flag,
+        tran_id
+    ) values (
+        #{id},
+        #{noteContent},
+        #{createBy},
+        #{createTime},
+        #{editFlag},
+        #{tranId}
+    )
+  </insert>
 </mapper>

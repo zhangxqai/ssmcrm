@@ -81,5 +81,10 @@ public interface ClueRemarkMapper {
      */
     int deleteClueRemarkById(String id);
 
-
+    /**
+     * 在转换时，查找出符合clueId的备注信息
+     * @param clueId
+     * @return
+     */
+    List<ClueRemark> selectForConversionClueRemark(String clueId);
 }

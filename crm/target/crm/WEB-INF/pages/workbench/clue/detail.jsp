@@ -114,7 +114,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 						html +="</div>";
 
 						//拼接，在那个地方拼接呢？
-						$("#remarkDiv").append(html);
+						$("#remarkDiv").before(html);
 
 						//保存好了之后将内容清空
 						$("#remark").val("");

@@ -450,4 +450,8 @@
     left join tbl_dic_value d on d.id = c.appellation
     where c.id = #{id}
   </select>
+
+  <delete id="deleteFroConversionBuId" parameterType="string">
+    delete from tbl_clue where id = #{id}
+  </delete>
 </mapper>

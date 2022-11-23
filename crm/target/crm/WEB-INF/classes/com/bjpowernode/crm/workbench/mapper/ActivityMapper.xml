@@ -355,5 +355,16 @@
     </foreach>
   </select>
 
-
+  <!--为了转换线索查询市场活动，根据市场活动的名称查询符合条件的市场活动-->
+  <select id="selectActivityForConversion" parameterType="map" resultMap="BaseResultMap">
+    select a.id,a.name,a.start_date,a.end_date,u.name as owner
+    from tbl_activity a
+    join tbl_user u on u.id = a.owner
+    where a.name like concat('%',#{name},'%')
+    and a.id in(
+        select activity_id
+        from tbl_clue_activity_relation
+        where clue_id = #{clueId}
+      )
+  </select>
 </mapper>

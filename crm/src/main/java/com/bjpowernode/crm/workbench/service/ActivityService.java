@@ -82,5 +82,11 @@ public interface ActivityService {
      */
     List<Activity> selectForClueRelationByIds(String[] ids);
 
+    /**
+     * 为了转换线索查询市场活动，根据市场活动的名称查询符合条件的市场活动
+     * @param map
+     * @return
+     */
+    List<Activity> selectActivityForConversion(Map<String,Object> map);
 
 }

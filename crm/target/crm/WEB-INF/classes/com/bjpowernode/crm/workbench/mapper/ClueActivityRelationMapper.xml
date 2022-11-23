@@ -121,4 +121,15 @@
   <delete id="deleteClueActivityRelationById" parameterType="string">
     delete from tbl_clue_activity_relation where activity_id = #{activityId} and clue_id = #{clueId}
   </delete>
+
+  <select id="selectClueActivityRemarkForContacts" parameterType="string" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from tbl_clue_activity_relation
+    where clue_id = #{clueId}
+  </select>
+
+  <!--根据clueId对市场活动关联表进行删除-->
+  <delete id="deleteClueActivityRelationForConversionByClueId" parameterType="string">
+    delete from tbl_clue_activity_relation where clue_id = #{clueId}
+  </delete>
 </mapper>
