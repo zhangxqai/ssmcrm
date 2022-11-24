@@ -92,5 +92,15 @@ public class ActivityService implements com.bjpowernode.crm.workbench.service.Ac
         return activityMapper.selectActivityForConversion(map);
     }
 
+    /**
+     * 在添加交易时，根据名称查询市场活动源
+     * @param name
+     * @return
+     */
+    @Override
+    public List<Activity> selectFroSavaTranByNameActivity(String name) {
+        return activityMapper.selectFroSavaTranByNameActivity(name);
+    }
+
 
 }

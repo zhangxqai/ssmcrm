@@ -89,4 +89,11 @@ public interface ActivityService {
      */
     List<Activity> selectActivityForConversion(Map<String,Object> map);
 
+    /**
+     * 在添加交易时，根据名称查询市场活动源
+     * @param name
+     * @return
+     */
+    List<Activity> selectFroSavaTranByNameActivity(String name);
+
 }

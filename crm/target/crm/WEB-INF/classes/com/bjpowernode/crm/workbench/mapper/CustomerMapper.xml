@@ -253,4 +253,16 @@
         #{description},
         #{address})
   </insert>
+
+  <select id="selectCustomerById" parameterType="string" resultType="string">
+    select name
+    from tbl_customer
+    where name like concat('%',#{name},'%')
+  </select>
+
+  <select id="selectCustomerByIdOne" parameterType="string" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from tbl_customer
+    where name = #{name}
+  </select>
 </mapper>

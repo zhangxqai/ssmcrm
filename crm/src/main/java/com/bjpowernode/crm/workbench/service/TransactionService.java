@@ -1,5 +1,6 @@
 package com.bjpowernode.crm.workbench.service;
 
+import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.domain.Transaction;
 
 import java.util.List;
@@ -20,4 +21,13 @@ public interface TransactionService {
      * @return
      */
     int selectTranSanctionAllCount(Map<String,Object> map);
+
+    /**
+     * 在交易模块中添加一个交易信息
+     * @param map
+     * @return
+     */
+    void insertTransactionOne(Map<String,Object> map);
+
+
 }

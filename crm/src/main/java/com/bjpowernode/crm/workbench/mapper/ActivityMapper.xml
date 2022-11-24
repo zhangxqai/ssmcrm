@@ -367,4 +367,11 @@
         where clue_id = #{clueId}
       )
   </select>
+
+  <select id="selectFroSavaTranByNameActivity" parameterType="string" resultMap="BaseResultMap">
+    select a.id,a.name,a.start_date,a.end_date,u.name as owner
+    from tbl_activity a
+    join tbl_user u on u.id = a.owner
+    where a.name like concat('%',#{name},'%')
+  </select>
 </mapper>
