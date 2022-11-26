@@ -419,4 +419,11 @@
     left join tbl_user u3 on u3.id = t.edit_by
     where t.id = #{id}
   </select>
+
+  <select id="selectCountOfTranGroupByStage" resultType="com.bjpowernode.crm.workbench.domain.FunnelVo">
+    select count(*) as value ,d.value as name
+    from tbl_transaction t
+    join tbl_dic_value d on d.id = t.stage
+    group by t.stage
+  </select>
 </mapper>

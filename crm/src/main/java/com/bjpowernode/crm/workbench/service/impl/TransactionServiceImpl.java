@@ -4,10 +4,7 @@ import com.bjpowernode.crm.commons.contants.Contants;
 import com.bjpowernode.crm.commons.utils.DateUtils;
 import com.bjpowernode.crm.commons.utils.UUIDUtils;
 import com.bjpowernode.crm.settings.domain.User;
-import com.bjpowernode.crm.workbench.domain.Contacts;
-import com.bjpowernode.crm.workbench.domain.Customer;
-import com.bjpowernode.crm.workbench.domain.Transaction;
-import com.bjpowernode.crm.workbench.domain.TransactionHistory;
+import com.bjpowernode.crm.workbench.domain.*;
 import com.bjpowernode.crm.workbench.mapper.CustomerMapper;
 import com.bjpowernode.crm.workbench.mapper.TransactionHistoryMapper;
 import com.bjpowernode.crm.workbench.mapper.TransactionMapper;
@@ -122,5 +119,14 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Transaction selectForDetailById(String id) {
         return transactionMapper.selectForDetailById(id);
+    }
+
+    /**
+     * 查询交易表中的各个阶段的交易量
+     * @return
+     */
+    @Override
+    public List<FunnelVo> selectCountOfTranGroupByStage() {
+        return transactionMapper.selectCountOfTranGroupByStage();
     }
 }

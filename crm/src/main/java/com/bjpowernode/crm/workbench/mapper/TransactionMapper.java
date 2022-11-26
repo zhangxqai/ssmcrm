@@ -1,5 +1,6 @@
 package com.bjpowernode.crm.workbench.mapper;
 
+import com.bjpowernode.crm.workbench.domain.FunnelVo;
 import com.bjpowernode.crm.workbench.domain.Transaction;
 
 import java.util.List;
@@ -81,4 +82,10 @@ public interface TransactionMapper {
      * @return
      */
     Transaction selectForDetailById(String id);
+
+    /**
+     * 查询交易表中的各个阶段的交易量
+     * @return
+     */
+    List<FunnelVo> selectCountOfTranGroupByStage();
 }

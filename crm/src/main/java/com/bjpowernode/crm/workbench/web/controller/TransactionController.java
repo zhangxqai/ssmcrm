@@ -298,4 +298,14 @@ public class TransactionController {
 
         return returnObject;
     }
+
+    @RequestMapping("/workbench/chart/transaction/selectCountOfTranGroupByStage.do")
+    public @ResponseBody Object selectCountOfTranGroupByStage(){
+
+        //调用service方法
+        List<FunnelVo> funnelVoList = transactionService.selectCountOfTranGroupByStage();
+
+        //直接返回去
+        return funnelVoList;
+    }
  }
