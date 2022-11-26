@@ -261,7 +261,27 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 	<!-- 阶段状态 -->
 	<div style="position: relative; left: 40px; top: -50px;">
 		阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
+
+		<%--循环查询出来的stageList，依次显示每一个遍历出来的图标--%>
+		<c:forEach items="${stageList}" var="stage">
+			<%--每遍历出来一次都可能有三种情况，需要判断一下--%>
+			<%--如果遍历出来的stage是当前交易所处的阶段，那么图标就要显示绿色--%>
+			<c:if test="${transaction.stage == stage.value}">
+				<span class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" data-content="${stage.value}" style="color: #90F790;"></span>
+				-----------
+			</c:if>
+			<%--如果遍历出来的stage是当前交易所处的阶段的前面，那么显示图标就为绿色勾的--%>
+			<c:if test="${transaction.orderNo>stage.orderNo}">
+				<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="${stage.value}" style="color: #90F790;"></span>
+				-----------
+			</c:if>
+			<%--如果遍历出来的stage是当前交易所处的阶段的后面，那么显示图标就为绿色勾的--%>
+			<c:if test="${transaction.orderNo<stage.orderNo}">
+				<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="${stage.value}"></span>
+				-------------
+			</c:if>
+		</c:forEach>
+		<%--<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
 		-----------
 		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="需求分析" style="color: #90F790;"></span>
 		-----------
@@ -278,8 +298,8 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="丢失的线索"></span>
 		-----------
 		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="因竞争丢失关闭"></span>
-		-----------
-		<span class="closingDate">2010-10-10</span>
+		-------------%>
+		<span class="closingDate">${transaction.expectedDate}</span>
 	</div>
 
 

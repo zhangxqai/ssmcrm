@@ -25,6 +25,7 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="contact_summary" jdbcType="VARCHAR" property="contactSummary" />
     <result column="next_contact_time" jdbcType="CHAR" property="nextContactTime" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -405,7 +406,7 @@
 
   <!--查看交易详情信息，根据id查询这个信息-->
   <select id="selectForDetailById" parameterType="string" resultMap="BaseResultMap">
-    select t.id,u1.name as owner,t.money,t.name,t.expected_date,c.name as customer_id,d1.value as stage,
+    select t.id,u1.name as owner,t.money,t.name,t.expected_date,c.name as customer_id,d1.value as stage,d1.order_no,
            d3.value as type, d4.value as source,t.activity_id,t.contacts_id,u2.name as create_by,t.create_time,u3.name as edit_by,
            t.edit_time,t.description,t.contact_summary,t.next_contact_time
     from tbl_transaction t

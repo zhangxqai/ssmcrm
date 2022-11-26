@@ -192,6 +192,11 @@ public class TransactionController {
         //第三步将这个可能性存到request中，或者存到transaction实体类中，要是存到transaction中需要在实体类中添加一个属性
         request.setAttribute("possibility",possibility);
 
+        //查询阶段，为了显示图标
+        List<DicValue> stageList = dicValueService.selectDicValue("stage");
+
+        request.setAttribute("stageList",stageList);
+
         //绑定获取到的数据
         request.setAttribute("transaction",transaction);
         request.setAttribute("transactionRemarkList",transactionRemarkList);
