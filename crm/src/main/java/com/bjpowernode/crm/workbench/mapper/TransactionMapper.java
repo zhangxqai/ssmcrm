@@ -74,4 +74,11 @@ public interface TransactionMapper {
      * @return
      */
     int insertTransaction(Transaction transaction);
+
+    /**
+     * 查看交易详情信息，根据id查询这个信息
+     * @param id
+     * @return
+     */
+    Transaction selectForDetailById(String id);
 }

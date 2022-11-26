@@ -68,7 +68,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 					//拼接字符串
 					html += "<tr>";
 					html += "<td><input type=\"checkbox\" /></td>";
-					html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">"+obj.name+"</a></td>";
+					html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/transaction/selectForDetailById.do?id="+obj.id+"';\">"+obj.name+"</a></td>";
 					html += "<td>"+obj.customerId+"</td>";
 					html += "<td>"+obj.stage+"</td>";
 					html += "<td>"+obj.type+"</td>";
@@ -243,7 +243,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 					<tbody id="tBody">
 						<%--<tr>
 							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">动力节点-交易01</a></td>
+							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">动力节点-交易01</a></td>
 							<td>动力节点</td>
 							<td>谈判/复审</td>
 							<td>新业务</td>
@@ -253,7 +253,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 						</tr>
                         <tr class="active">
                             <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">动力节点-交易01</a></td>
+                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">动力节点-交易01</a></td>
                             <td>动力节点</td>
                             <td>谈判/复审</td>
                             <td>新业务</td>

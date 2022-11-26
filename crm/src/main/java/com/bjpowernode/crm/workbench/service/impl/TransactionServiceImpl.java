@@ -113,4 +113,14 @@ public class TransactionServiceImpl implements TransactionService {
         transactionHistoryMapper.insertTransactionHistory(transactionHistory);
 
     }
+
+    /**
+     * 看交易详情信息，根据id查询这个信息
+     * @param id
+     * @return
+     */
+    @Override
+    public Transaction selectForDetailById(String id) {
+        return transactionMapper.selectForDetailById(id);
+    }
 }

@@ -175,4 +175,13 @@
         #{tranId}
      )
   </insert>
+
+  <!--为了跳转页面，根据交易id查询交易历史记录-->
+  <select id="selectForTranHistoryById" parameterType="string" resultMap="BaseResultMap">
+    select th.id,d.value as stage,th.money,th.expected_date,th.create_time,u.name as create_by
+    from tbl_transaction_history th
+    join tbl_dic_value d on d.id = th.stage
+    join tbl_user u on u.id = th.create_by
+    where th.tran_id = #{tranId}
+  </select>
 </mapper>

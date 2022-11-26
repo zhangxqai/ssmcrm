@@ -647,7 +647,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				<img title="${crl.createBy}" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 				<div style="position: relative; top: -40px; left: 40px;" >
 					<h5>${crl.noteContent}</h5>
-					<font color="gray">线索</font> <font color="gray">-</font> <b>${clue.fullname}${clue.appellation}-${clue.company}</b> <small style="color: gray;"> ${crl.editFlag == "0"?crl.createTime:crl.editTime}由${crl.editFlag == "0"?crl.createBy:crl.createTime}${crl.editFlag == "0"?"创建":"修改"}</small>
+					<font color="gray">线索</font> <font color="gray">-</font> <b>${clue.fullname}${clue.appellation}-${clue.company}</b> <small style="color: gray;"> ${crl.editFlag == "0"?crl.createTime:crl.editTime}由${crl.editFlag == "0"?crl.createBy:crl.editBy}${crl.editFlag == "0"?"创建":"修改"}</small>
 					<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
 						<a class="myHref" name='editA' remarkId="${crl.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 						&nbsp;&nbsp;&nbsp;&nbsp;

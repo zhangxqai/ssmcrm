@@ -2,16 +2,18 @@ package com.bjpowernode.crm.workbench.web.controller;
 
 import com.bjpowernode.crm.commons.contants.Contants;
 import com.bjpowernode.crm.commons.domain.ReturnObject;
+import com.bjpowernode.crm.commons.utils.DateUtils;
+import com.bjpowernode.crm.commons.utils.UUIDUtils;
 import com.bjpowernode.crm.settings.domain.DicValue;
 import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.settings.service.DicValueService;
 import com.bjpowernode.crm.settings.service.UserService;
-import com.bjpowernode.crm.workbench.domain.Activity;
-import com.bjpowernode.crm.workbench.domain.Contacts;
-import com.bjpowernode.crm.workbench.domain.Transaction;
+import com.bjpowernode.crm.workbench.domain.*;
 import com.bjpowernode.crm.workbench.mapper.ActivityMapper;
 import com.bjpowernode.crm.workbench.mapper.ContactsMapper;
 import com.bjpowernode.crm.workbench.service.CustomerService;
+import com.bjpowernode.crm.workbench.service.TransactionHistoryService;
+import com.bjpowernode.crm.workbench.service.TransactionRemarkService;
 import com.bjpowernode.crm.workbench.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,6 +45,12 @@ public class TransactionController {
 
     @Autowired
     private ContactsMapper contactsMapper;
+
+    @Autowired
+    private TransactionRemarkService transactionRemarkService;
+
+    @Autowired
+    private TransactionHistoryService transactionHistoryService;
 
     @RequestMapping("/workbench/transaction/selectTranSanction.do")
     public @ResponseBody Object selectTranSanction(String owner, String name, String customerId, String stage, String type, String source, String contactsId, int pageNo, int pageSize){
@@ -166,4 +174,123 @@ public class TransactionController {
         return contactsList;
     }
 
-}
+    @RequestMapping("/workbench/transaction/selectForDetailById.do")
+    public String selectForDetailById(String id,HttpServletRequest request){
+
+        //收集数据没有数据就直接调用service方法
+        Transaction transaction = transactionService.selectForDetailById(id);
+
+        //还有收集备注信息的全部内容
+        List<TransactionRemark> transactionRemarkList = transactionRemarkService.selectForDetailTranRemarkById(transaction.getId());
+        //还有收集交易历史的全部内容
+        List<TransactionHistory> transactionHistoryList = transactionHistoryService.selectForTranHistoryById(transaction.getId());
+
+        //还有将可能性查出来，怎么查，第一步通过 ResourceBundle.getBundle("")方法解析获取一个 ResourceBundle
+        ResourceBundle bundle = ResourceBundle.getBundle("possibility");
+        //第二步，将返回来的阶段传进去获取阶段
+        String possibility = bundle.getString(transaction.getStage());
+        //第三步将这个可能性存到request中，或者存到transaction实体类中，要是存到transaction中需要在实体类中添加一个属性
+        request.setAttribute("possibility",possibility);
+
+        //绑定获取到的数据
+        request.setAttribute("transaction",transaction);
+        request.setAttribute("transactionRemarkList",transactionRemarkList);
+        request.setAttribute("transactionHistoryList",transactionHistoryList);
+
+        //跳转页面
+        return "workbench/transaction/detail";
+    }
+
+    @RequestMapping("/workbench/transaction/updateTransactionRemark.do")
+    public @ResponseBody Object updateTransactionRemark(String noteContent,String tranId,HttpSession session){
+
+        User user = (User) session.getAttribute(Contants.SESSION_USER);
+        //收集数据
+        TransactionRemark transactionRemark = new TransactionRemark();
+        transactionRemark.setId(UUIDUtils.getUUID());
+        transactionRemark.setNoteContent(noteContent);
+        transactionRemark.setCreateBy(user.getId());
+        transactionRemark.setCreateTime(DateUtils.formateDateTime(new Date()));
+        transactionRemark.setEditFlag(Contants.REMARK_EDIT_FLAG_NO_EDITED);
+        transactionRemark.setTranId(tranId);
+
+        ReturnObject returnObject = new ReturnObject();
+        try{
+            //收集好了数据，就调用service方法
+            int count = transactionRemarkService.insertTransactionRemark(transactionRemark);
+
+            //判断有没有添加成功
+            if (count > 0){
+                //封装数据
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject.setRetData(transactionRemark);
+            }else {
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("系统忙，请稍后重试...");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("系统忙，请稍后重试...");
+        }
+       return returnObject;
+    }
+
+    @RequestMapping("/workbench/transaction/deleteTransactionRemark.do")
+    public @ResponseBody Object deleteTransactionRemark(String id){
+
+        ReturnObject returnObject = new ReturnObject();
+        try {
+            //收集数据，没有数据就先调用service方法
+            int count = transactionRemarkService.deleteTransactionRemark(id);
+
+            //判断有没有删除成功
+            if (count >0){
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+            }else {
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("系统忙，请稍后重试...");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("系统忙，请稍后重试...");
+        }
+
+        return returnObject;
+    }
+
+    @RequestMapping("/workbench/transaction/updateForTransactionRemark.do")
+    public @ResponseBody Object updateForTransactionRemark(String id,String noteContent,HttpSession session){
+
+        User user = (User) session.getAttribute(Contants.SESSION_USER);
+        //收集数据
+        TransactionRemark transactionRemark = new TransactionRemark();
+        transactionRemark.setId(id);
+        transactionRemark.setNoteContent(noteContent);
+        transactionRemark.setEditBy(user.getId());
+        transactionRemark.setEditTime(DateUtils.formateDateTime(new Date()));
+        transactionRemark.setEditFlag(Contants.REMARK_EDIT_FLAG_YES_EDITED);
+
+        ReturnObject returnObject = new ReturnObject();
+        try {
+            //封装好数据就要调用service方法
+            int count = transactionRemarkService.updateTransactionRemark(transactionRemark);
+
+            //判断
+            if (count > 0){
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject.setRetData(transactionRemark);
+            }else {
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("系统忙，请稍后重试...");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("系统忙，请稍后重试...");
+        }
+
+        return returnObject;
+    }
+ }

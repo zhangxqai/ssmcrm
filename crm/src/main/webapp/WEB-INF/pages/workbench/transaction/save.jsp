@@ -166,7 +166,8 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 			$("#findMarketActivityBtn").click(function (){
 				//打开模态窗口
 				$("#findMarketActivity").modal("show");
-				//收集数据,查询不需要验证
+				//要将框中的数据清除
+				$("#activityName").val("");
 
 			})
 
@@ -175,6 +176,7 @@ String basePath =request.getScheme()+"://"+request.getServerName()+":"+request.g
 				//打开模态窗口
 				$("#findContacts").modal("show");
 				//收集数据查询不需要验证
+				$("#contactsName").val("");
 			})
 
 			$("#activityName").keyup(function (){

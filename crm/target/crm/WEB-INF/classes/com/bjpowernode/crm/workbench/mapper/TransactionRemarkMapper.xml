@@ -183,4 +183,24 @@
         #{tranId}
     )
   </insert>
+
+  <!--为了跳转页面，根据交易id查询交易备注信息-->
+  <select id="selectForDetailTranRemarkById" parameterType="string" resultMap="BaseResultMap">
+    select t.id,t.note_content,u1.name as create_by,t.create_time,u2.name as edit_by,t.edit_flag
+    from tbl_transaction_remark t
+    join tbl_user u1 on u1.id = t.create_by
+    left join tbl_user u2 on u2.id = t.edit_by
+    where t.tran_id = #{tranId}
+  </select>
+
+  <!--根据id删除备注信息-->
+  <delete id="deleteTransactionRemark" parameterType="string">
+    delete from tbl_transaction_remark where id = #{id}
+  </delete>
+
+  <!--根据id对备注进行修改-->
+  <update id="updateTransactionRemark" parameterType="com.bjpowernode.crm.workbench.domain.TransactionRemark">
+    update tbl_transaction_remark set note_content = #{noteContent},edit_by = #{editBy},edit_time = #{editTime},edit_flag = #{editFlag}
+    where id = #{id}
+  </update>
 </mapper>
